@@ -1,0 +1,80 @@
+<!-- create a show -->
+{% extends "layouts/base-home.html" %}
+{% block title %} Admin Board {% endblock %} 
+{% block content %}
+<section>
+    <!-- <div class="container my-5">
+        <h1>Create show</h1>
+        <form method="POST" action="/create_show">
+            <div class="mb-3">
+              <label for="name" class="form-label">Name:</label>
+              <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="price" class="form-label">Price:</label>
+              <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+            <div class="mb-3">
+              <label for="timing" class="form-label">Timing:</label>
+              <input type="datetime-local" class="form-control" id="timing" name="timing" required>
+            </div>
+            <div class="mb-3">
+              <label for="tag" class="form-label">Tag:</label>
+              <input type="text" class="form-control" id="tag" name="tag" required>
+            </div>
+            <div class="mb-3">
+              <label for="rating" class="form-label">Rating:</label>
+              <input type="number" class="form-control" id="rating" name="rating" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+          
+    </card>
+    </div> -->
+    <div class="container">
+        <form method="POST" action="/createshow">
+          <h2>Create a New Show</h2>
+          <div class="mb-3">
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label for="price" class="form-label">Price:</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+          </div>
+          <!-- <div class="mb-3">
+            <label for="timing" class="form-label">Timing:</label>
+            <input type="datetime-local" class="form-control" id="timing" name="timing" required>
+          </div> -->
+          <!-- <div class="input-group">
+            <input type="date" class="form-control" id="date" name="date" required>
+            <input type="time" class="form-control" id="time" name="time" required>
+          </div> -->
+          <div class="mb-3">
+            <label for="start-time" class="form-label">Start Time:</label>
+            <input type="time" class="form-control" id="start-time" name="start-time" required>
+          </div>
+          <div class="mb-3">
+            <label for="end-time" class="form-label">End Time:</label>
+            <input type="time" class="form-control" id="end-time" name="end-time" required>
+          </div>
+          <div class="mb-3">
+            <label for="date" class="form-label">Date:</label>
+            <input type="date" class="form-control" id="date" name="date" required>
+          </div>
+          <div class="mb-3">
+            <label for="tag" class="form-label">Tag:</label>
+            <input type="text" class="form-control" id="tag" name="tag" required>
+          </div>
+          <div class="mb-3">
+            <label for="rating" class="form-label">Rating:</label>
+            <input type="number" class="form-control" id="rating" name="rating" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+      </div>
+</section>
+    {% endblock %}
