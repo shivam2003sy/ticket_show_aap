@@ -100,7 +100,6 @@ def index():
         user = User.query.filter_by(user=current_user.user).first()
         if user.admin == True :
            view = Venue.query.filter_by(userid = user.id).all()
-
            return render_template('admin.html' , view = view)
         else:
             return  render_template('index.html')
@@ -120,7 +119,7 @@ def createvenue():
                 capacity = request.form.get('Capacity', '', type=int)
                 venue = Venue(name, address, capacity  , user.id)
                 venue.save()
-                return redirect(url_for('login'))
+                return redirect(url_for('index'))
         else:
             return  render_template('index.html')
 @app.route('/createshow' , methods=['GET', 'POST'])
