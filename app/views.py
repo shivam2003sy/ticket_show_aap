@@ -59,7 +59,6 @@ def register():
             user.save()
             msg = 'User created, please <a href="' + url_for('login') + '">login</a>'     
             success = True
-        return render_template( 'accounts/register.html', form=form, msg=msg, success=success)
     else:
         msg = 'Input error'     
     return render_template( 'accounts/register.html', form=form, msg=msg, success=success )
