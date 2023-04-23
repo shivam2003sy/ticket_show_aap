@@ -1,0 +1,27 @@
+{% extends "layouts/base-home.html" %}
+{% block title %} Board {% endblock %} 
+{% block content %}
+ 
+  <div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>book Ticket</h2>
+        </div>
+        <hr>
+        <h1>{{ show.name }}</h1>
+        <p>{{ show.description }}</p>
+        <p>{{ show.start_time }}</p>
+        <p>{{ venue.name }}</p>
+        <h1>book </h1>
+        <form method="POST">
+            <input type="hidden" name="csrf_token">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" required>
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" required>
+            <label for="num_tickets">Number of Tickets:</label>
+            <input type="number" name="num_tickets" id="num_tickets" required min="1">
+            <input type="submit" value="Book Tickets">
+          </form>
+    </section>
+{% endblock content %}

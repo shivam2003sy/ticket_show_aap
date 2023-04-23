@@ -70,6 +70,10 @@ class   Show(db.Model):
         self.startTime  = startTime
         self.endTime    = endTime
 
+    def availability(self):
+        c= self.venue.capacity
+        if c : 
+            return int(c) - (len(self.tickets))
 
     def __repr__(self):
         return str(self.id) + ' - ' + str(self.name)

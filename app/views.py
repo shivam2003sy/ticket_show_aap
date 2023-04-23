@@ -1,17 +1,15 @@
 # Python modules
 import os, logging 
-
+from datetime import datetime
 # Flask modules
-from flask  import render_template, request, url_for, redirect, send_from_directory
+from flask  import render_template, request, url_for, redirect, send_from_directory , flash
 from flask_login  import login_user, logout_user, current_user, login_required
 from werkzeug.exceptions import HTTPException, NotFound, abort
 from jinja2  import TemplateNotFound
-
 # App modules
 from app import app, lm, db, bc
-from app.models import User , Venue , Show
-from app.forms import LoginForm, RegisterForm
-
+from app.models import User , Venue , Show , Ticket
+from app.forms import LoginForm, RegisterForm 
 # provide login manager with load_user callback
 @lm.user_loader
 def load_user(user_id):
@@ -100,9 +98,13 @@ def index():
         user = User.query.filter_by(user=current_user.user).first()
         if user.admin == True :
            view = Venue.query.filter_by(userid = user.id).all()
-           return render_template('admin.html' , view = view)
+           shows = Show.query.join(Venue).filter(Venue.userid == user.id).all()
+           return render_template('admin.html' , view = view , shows = shows)
         else:
-            return  render_template('index.html')
+             # query shows and their respective venues
+            shows = db.session.query(Show, Venue).join(Venue).all()
+            # pass the results to the template
+            return render_template('index.html', shows=shows)
         
 @app.route('/createvenue' , methods=['GET', 'POST'])
 def createvenue():
@@ -128,7 +130,66 @@ def create_show():
         return redirect(url_for('login'))
     else:
         user = User.query.filter_by(user=current_user.user).first()
+        # get venue id from url
+        vid  = None
         if user.admin == True :
-            return render_template('admin/createshow.html')
+            if request.method == 'GET':
+                id = int(request.args.get('id'))
+                venue = Venue.query.filter_by(id = id).first()
+                vid = venue.id
+                return render_template('admin/createshow.html')
+            else:
+                # create show from model.py
+                name  =  request.form.get('name', '', type=str)
+                price =  request.form.get('price', '', type=int)
+                starttime =  request.form.get('start-time', '', type=str)
+                endtime =  request.form.get('end-time', '', type=str)
+                date = request.form.get('date', '', type=str)
+                tag = request.form.get('tag', '', type=str)
+                rating = request.form.get('rating', '', type=int)
+                #  handel time in sqlite endtime
+                endtime  = datetime.strptime(endtime, '%H:%M')
+                starttime = datetime.strptime(starttime, '%H:%M')
+                # handel date in sqlite
+                date = datetime.strptime(date, '%Y-%m-%d')
+                show = Show(
+                    name= name,
+                    rating= rating,
+                    ticketPrice= price,
+                    startTime= starttime,
+                    endTime= endtime,
+                    date= date,
+                    tags= tag,
+                    venue_id=vid
+                )
+
+                show.save()
+                return redirect(url_for('index'))
         else:
             return  render_template('index.html')
+        
+
+@app.route('/show/<int:id>', methods=['GET', 'POST'])
+def show(id):
+    # get show and venue by id
+    show = Show.query.filter_by(id=id).first()
+    venue = Venue.query.filter_by(id=show.venue_id).first()
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        num_tickets = int(request.form.get('num_tickets'))
+
+        # check if there are enough available tickets
+        if show.availability() < num_tickets:
+            flash('Sorry, there are not enough tickets available', 'error')
+        else:
+            # create new ticket and add to database
+            ticket = Ticket(show_id=show.id, user_id=current_user.id)
+            db.session.add(ticket)
+            db.session.commit()
+            flash('Your tickets have been booked!', 'success')
+            return redirect(url_for('show', id=id))
+
+    # pass the results to the template
+    return render_template('show.html', show=show, venue=venue)
